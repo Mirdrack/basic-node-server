@@ -2,18 +2,21 @@ var http = require('http');
 var url = require('url');
 
 var router = require('./router');
+var requestHandlers = require('./handler');
+
+var handle = {};
+handle['/'] = requestHandlers.home;
+handle['/home'] = requestHandlers.home;
+handle['/contact'] = requestHandlers.contact;
 
 
-http.createServer(onRequest).listen(8000);
 
 function onRequest(request, response) {
 
-	console.log('Server ready...');
+	console.log('Request...');
 
 	var pathname = url.parse(request.url).pathname;
-	router.handle(pathname);
-
-	response.writeHead(200, {'Content-Type': 'text/html'});
-	response.write('Hello Im a random route');
-	response.end();
+	router.handle(pathname, handle, response);
 }
+
+http.createServer(onRequest).listen(8000);
